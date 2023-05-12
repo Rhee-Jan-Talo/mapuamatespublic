@@ -1,0 +1,199 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+*:focus {
+    outline: none;
+}
+
+
+::-webkit-input-placeholder {
+    font-style: italic;
+ }
+ :-moz-placeholder {
+    font-style: italic;  
+ }
+ ::-moz-placeholder {
+    font-style: italic;  
+ }
+ :-ms-input-placeholder {  
+    font-style: italic; 
+ }
+ textarea {
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+}
+
+.elipsis {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: "...";
+}
+
+
+@font-face {
+    font-family: LibreFranklinBold;
+    src: url('../../fonts/Libre Franklin/LibreFranklin-Bold.ttf');
+  }
+  @font-face {
+    font-family: LibreFranklinRegular;
+    src: url('../../fonts/Libre Franklin/LibreFranklin-Regular.ttf');
+  }
+  @font-face {
+    font-family: ArimoBold;
+    src: url('../../fonts/Arimo/Arimo-Bold.ttf');
+  }
+  @font-face {
+      font-family: ArimoReg;
+      src: url('../../fonts/Arimo/Arimo-Regular.ttf')
+  }
+  .LibreFranklinBold{
+    font-family: LibreFranklinBold;
+    font-weight: 700;
+  }
+  .ArimoBold{
+    font-family: ArimoBold;
+  }
+  .LibreFranklinRegular{
+    font-family: LibreFranklinRegular;
+  }
+  .ArimoReg{
+      font-family: ArimoReg;
+  }
+
+.title{
+    color: #2563eb; 
+    -webkit-text-stroke: 2px white; 
+}
+.title-small{
+  color: #2563eb; 
+  -webkit-text-stroke: 1px white; 
+}
+
+.login {
+    font-size: 16px;
+    width: 350px;
+    outline: none;
+    border-width: 0 0 4px;
+    border-color: black;
+  }
+  .login:focus {
+    border-color: #4e4c4c;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+}
+.textarea-style:focus{
+  border-color: #4e4c4c;
+  -webkit-box-shadow: none;
+  box-shadow: none;
+}
+
+.edit-profile {
+  font-size: 16px;
+  width: 450px;
+  outline: none;
+  border-width: 0 0 4px;
+  border-color: black;
+}
+.edit-profile:focus {
+  border-color: #4e4c4c;
+  -webkit-box-shadow: none;
+  box-shadow: none;
+}
+
+.create-board-title {
+  font-size: 16px;
+  width: 100%;
+  outline: none;
+  border-width: 0 0 4px;
+  border-color: black;
+}
+.create-board-title:focus {
+  border-color: #4e4c4c;
+  -webkit-box-shadow: none;
+  box-shadow: none;
+}
+
+.create-board {
+  font-size: 16px;
+  width: 100%;
+  outline: none;
+  border-width: 0 0 2px;
+  border-color: black;
+}
+.create-board:focus {
+  border-color: #4e4c4c;
+  -webkit-box-shadow: none;
+  box-shadow: none;
+}
+
+.comment {
+  font-size: 16px;
+  width: 100%;
+  outline: none;
+  border-width: 0 0 2px;
+  border-color: black;
+}
+.comment:focus {
+  border-color: #4e4c4c;
+  -webkit-box-shadow: none;
+  box-shadow: none;
+}
+
+.chats{
+  display: flex;
+  flex-direction: column-reverse;
+}
+
+.active-chat{
+  background-color:rgb(147 197 253 / var(--tw-bg-opacity));
+}
+.login-error {
+    font-size: 16px;
+    width: 350px;
+    outline: none;
+    border-width: 0 0 4px;
+    border-color: rgb(255, 1, 1);
+  }
+  .login-error:focus {
+    border-color: #000000;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+}
+
+.profile-picture{
+  border-radius: 50% 50% 50% 50%;
+  height: 40px;
+  width: 40px;
+  object-fit: cover;
+}
+
+.profile-picture-big{
+  border-radius: 50% 50% 50% 50%;
+  height: 50px;
+  width:  50px;
+  object-fit: cover;
+}
+
+.profile-picture-inbox{
+  border-radius: 50% 50% 50% 50%;
+  height: 60px;
+  width: 60px;
+  object-fit: cover;
+  min-width: 60px;
+}
+
+.profile-picture-edit{
+  border-radius: 50% 50% 50% 50%;
+  height: 200px;
+  width: 200px;
+  object-fit: cover;
+}
+
+.profile-picture-comments{
+  border-radius: 50% 50% 50% 50%;
+  height: 30px;
+  width: 30px;
+  object-fit: cover;
+}

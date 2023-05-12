@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block content %}
+{% load static %}
+<body class="">
+<div class="flex flex-row ">
+    <div class="w-[20%] from-blue-500 to-blue-200 bg-gradient-to-r h-auto">
+        {% include 'partials/left_navbar_board.html' %}
+    </div>
+    <div class="w-[80%] min-h-screen">
+        <div class="w-[95%]  m-auto">
+            <form method="POST" class="mt-10 flex flex-col w-[80%]">{% csrf_token %}
+                <div class="h-[60px] mt-10 flex flex-row">
+                    {% if user.pfp %}
+                    <img src="{% static user.pfp.url %}" class="profile-picture">
+                    {% else %}
+                    <img src="{% static 'images/default.png' %}" class="profile-picture">
+                    {% endif %}
+                    <span class="ArimoBold mt-[9px] ml-2 text-[14px]"> {{user.fname|default_if_none:""|title}} {{user.mname|default_if_none:""|slice:":1"|upper}}. {{user.lname|default_if_none:""|title}} | Discussion Board</span>
+                </div>
+                <p> <input  class="create-board-title mt-4" name="disc_title" type="text"  placeholder="Discussion Title" value="{{board_data.disc_title|title}}"  required></p>
+                <p><textarea class="textarea-style mt-12 border-2 border-black w-full h-[150px]" name="disc_description" placeholder="Description" required>{{board_data.disc_description}}</textarea></p>
+                <button type="submit" class="ml-auto mt-12"><p class="ArimoBold">Save</p></button>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+
+{% endblock %}

@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+{% block content %}
+{% load static %}
+<body class="from-blue-600 to-blue-300 bg-gradient-to-b ">
+    <div class="w-[90%] m-auto  mt-8 h-screen">
+        <div class="flex flex-row justify-center align-middle items-center">
+            <img src="{% static 'images/logo.webp' %}" class="h-[100px]">
+            <span class="text-[40px] ArimoBold text-white title ml-2">MAPUAMATES</span>
+        </div>
+        <div class="bg-white  border-2 border-transparent rounded-[40px] py-[50px] mt-8">
+            <p class="text-black text-[30px] ArimoBold text-center">VERIFY YOUR ACCOUNT</p>
+            <div class="mt-6 text-center">
+                <span class="LibreFranklinRegular text-[18px]">To start using MapuaMates, please input the OTP 
+                    <br>that was sent to <b><u>{{ email }}</u></b> to verify your account</span>
+            </div>
+            <div class="text-left w-[80%] m-auto mt-10">
+                <form method="POST" onsubmit="return validateOTP()" action="{% url 'create-account' %}" > {% csrf_token %} 
+                    <input value="{{ email }}" name="email" hidden>
+                    <input value="{{ username }}" name="username" hidden>
+                    <input value="{{ pass }}" name="pass" hidden>
+                    <input value="{{ otp }}" id="otp" hidden>
+                    <div class="flex flex-row justify-center userInput ">
+                        <input type="text" id='ist' maxlength="1" onkeyup="clickEvent(this,'sec')" class="text-center focus:ring-[1px] focus:ring-[#6e87da] focus:border-[1px] focus:border-[#6e87da] w-[50px] h-[50px] border-[1px] border-gray-400 rounded-[5px]" required>&nbsp;
+                        <input type="text" id="sec" maxlength="1" onkeyup="clickEvent(this,'third')" class="text-center focus:ring-[1px] focus:ring-[#6e87da] focus:border-[1px] focus:border-[#6e87da] w-[50px] h-[50px] border-[1px] border-gray-400 rounded-[5px]" required>&nbsp;
+                        <input type="text" id="third" maxlength="1" onkeyup="clickEvent(this,'fourth')" class="text-center focus:ring-[1px] focus:ring-[#6e87da] focus:border-[1px] focus:border-[#6e87da] w-[50px] h-[50px] border-[1px] border-gray-400 rounded-[5px]" required>&nbsp;
+                        <input type="text" id="fourth" maxlength="1" onkeyup="clickEvent(this,'fifth')" class="text-center focus:ring-[1px] focus:ring-[#6e87da] focus:border-[1px] focus:border-[#6e87da] w-[50px] h-[50px] border-[1px] border-gray-400 rounded-[5px]" required>&nbsp;
+                        <input type="text" id="fifth" maxlength="1" onkeyup="clickEvent(this,'sixth')" class="text-center focus:ring-[1px] focus:ring-[#6e87da] focus:border-[1px] focus:border-[#6e87da] w-[50px] h-[50px] border-[1px] border-gray-400 rounded-[5px]" required>&nbsp;
+                        <input type="text" id="sixth" maxlength="1" class="text-center focus:ring-[1px] focus:ring-[#6e87da] focus:border-[1px] focus:border-[#6e87da] w-[50px] h-[50px] border-[1px] border-gray-400 rounded-[5px]" required>
+                    </div>
+            </div>
+            <p class="text-center mt-8 text-[14px] text-red-500" id="otp-error"></p>
+            <div class="mt-10 text-center">
+                <button type="submit" class="mt-6 w-[280px] h-[60px] border-2 border-transparent rounded-[25px] bg-[#8ee6fc] text-[18px]  ArimoBold text-cente">CONFIRM</button>
+            </div>
+            </form>
+            
+        </div>
+        
+    </div>
+</body>
+<script>
+    function validateOTP(){
+        let user = document.getElementById('user_otp').value
+        let otp = document.getElementById('otp').value
+        if (user === otp){
+            return true
+        }
+        document.getElementById('otp-error').innerHTML = "OTP does not match or invalid"
+        return false
+    }
+</script>
+<script>
+    function clickEvent(first,last){
+          if(first.value.length){
+            document.getElementById(last).focus();
+          }
+        }
+    </script>
+    <script>
+        function validateOTP(){
+            let otp = document.getElementById('otp').value 
+            let userOTP = `${document.getElementById('ist').value}${document.getElementById('sec').value}${document.getElementById('third').value}${document.getElementById('fourth').value}${document.getElementById('fifth').value}${document.getElementById('sixth').value}`
+            if(otp === userOTP){
+                return true
+            }
+            document.getElementById('ist').classList.add("border-red-500")
+            document.getElementById('ist').classList.add("border-[2px]")
+            document.getElementById('sec').classList.add("border-red-500")
+            document.getElementById('sec').classList.add("border-[2px]")
+            document.getElementById('third').classList.add("border-red-500")
+            document.getElementById('third').classList.add("border-[2px]")
+            document.getElementById('fourth').classList.add("border-red-500")
+            document.getElementById('fourth').classList.add("border-[2px]")
+            document.getElementById('fifth').classList.add("border-red-500")
+            document.getElementById('fifth').classList.add("border-[2px]")
+            document.getElementById('sixth').classList.add("border-red-500")
+            document.getElementById('sixth').classList.add("border-[2px]")
+            document.getElementById('otp-error').innerHTML = "Error: OTP does not match"
+            return false
+        }
+    </script>
+{% endblock %}

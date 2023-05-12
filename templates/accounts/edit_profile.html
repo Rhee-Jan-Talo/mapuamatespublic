@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block content %}
+{% load static %}
+
+{% include 'partials/message_modal.html' %}
+{% include "partials/navbar.html" %}
+<div class="w-[90%] m-auto h-screen mt-4">
+    <p class="ArimoBold text-[60px] text-black">Edit Profile</p>
+    <hr class="border-[1px] w-[70%]">
+    <form method="POST" enctype="multipart/form-data">{% csrf_token %}
+        <div class="flex flex-row">
+            <div class="w-[30%] m-auto ">
+                <div class="flex-col flex justify-center">
+                    {% if userProfile.pfp %}
+                    <img src="{% static userProfile.pfp.url %}" class="profile-picture-edit m-auto" id="img_container">
+                    {% else %}
+                    <img src="{% static 'images/default.png' %}" class="profile-picture-edit m-auto" id="img_container">
+                    {% endif %}
+                    <label for="img_file" class="ArimoBold text-center cursor-pointer mt-6"><i class="fa-solid fa-camera fa-lg mr-2"></i>UPLOAD NEW PHOTO</label>
+                    <input type="file" id="img_file" class="hidden" accept="image/*"
+                    name="pfp" >
+                </div>
+            </div>
+            <div class="w-[70%]   border-l-2 border-gray-500 h-full">
+                <div class="ml-10">
+                    <div class="py-10 LibreFranklinRegular">
+                        <p> <input class="edit-profile" name="fname" type="text"  placeholder="First Name" value="{{userProfile.fname|default_if_none:''}}"  required></p>
+                        <p> <input  class="edit-profile mt-4" name="mname" type="text"  placeholder="Middle Name" value="{{userProfile.mname|default_if_none:''}}"  required></p>
+                        <p> <input  class="edit-profile mt-4" name="lname" type="text"  placeholder="Last Name" value="{{userProfile.lname|default_if_none:''}}"  required></p>
+                        <P> <select class="edit-profile mt-4" name="strand" required>
+                            <option value="" disabled selected>Select your Strand</option>
+                            {% for code, name in form.strand.field.choices %}
+                            <option value="{{ code }}"
+                                    {% if code == userProfile.strand %} selected {% endif %}>
+                                {{ name }}
+                            </option>
+                            {% endfor %}
+                        </select></P>
+                    </div>
+                </div>
+                <div class="mt-4 ml-10">
+                    <button type="submit" class="w-[200px] h-[50px] bg-black text-white ArimoBold text-[18px] ">SAVE</button>
+                </div>
+            </div>
+            
+        </div>
+    </form>
+</div>
+<script>
+    let img_container = document.getElementById('img_container')
+    let img_file = document.getElementById('img_file')
+    img_file.onchange = evt => {
+        const [file] = img_file.files
+        if (file) {
+            img_container.src = URL.createObjectURL(file)
+        }
+        }
+</script>
+
+
+{% endblock %}

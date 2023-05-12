@@ -1,0 +1,41 @@
+python manage.py collectstatic --noinput;
+
+heroku run bash
+~$  ./manage.py migrate (if dli mag work try python manage.py migrate)
+~$  exit
+
+heroku ps:scale web=1
+heroku config:set DJANGO_SETTINGS_MODULE=mapuamates.settings
+
+could be usable 
+web: daphne chat.asgi:channel_layer --port $PORT --bind 0.0.0.0 -v2
+chatworker: python manage.py runworker --settings=chat.settings -v2
+
+
+running:
+web: gunicorn mapuamates.wsgi:application --preload --log-file - -w 2 -k uvicorn.workers.UvicornWorker
+chatworker: python manage.py runworker --settings=mapuamates.settings
+
+web: gunicorn mapuamates.wsgi:application --preload --log-file -
+heroku ps:scale web=1
+heroku config:set DJANGO_SETTINGS_MODULE=mapuamates.settings
+
+
+
+This error message indicates that you are trying to establish a WebSocket connection from a page loaded over HTTPS to an insecure WebSocket endpoint (i.e., using the ws:// scheme instead of wss://). This is not allowed by modern web browsers for security reasons.
+
+To resolve this issue, you need to ensure that your WebSocket endpoint is served over a secure (HTTPS) connection. This typically involves configuring your web server to serve the WebSocket endpoint over SSL/TLS using the wss:// scheme.
+
+Here are the general steps you can follow to configure your WebSocket endpoint for HTTPS:
+
+Obtain a valid SSL/TLS certificate for your domain from a trusted Certificate Authority (CA). You can obtain free SSL/TLS certificates from Let's Encrypt, or purchase them from a commercial CA.
+
+Configure your web server (e.g., Nginx or Apache) to serve your WebSocket endpoint over SSL/TLS using the wss:// scheme. This typically involves creating a new virtual host configuration that listens on port 443 (the default HTTPS port), configuring SSL/TLS settings (e.g., certificate paths), and proxying requests to your WebSocket application.
+
+Update your WebSocket client to use the wss:// scheme instead of ws://. If you are using a JavaScript WebSocket client, you can simply change the protocol from ws:// to wss://.
+
+Once you have completed these steps, your WebSocket endpoint should be served over a secure (HTTPS) connection, and you should be able to establish WebSocket connections from pages loaded over HTTPS without any security errors.
+
+
+
+heroku pg:killall

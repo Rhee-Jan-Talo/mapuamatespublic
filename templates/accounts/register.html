@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+{% block content %}
+{% load static %}
+<body class="from-blue-600 to-blue-300 bg-gradient-to-b ">
+    <div class="w-[90%] m-auto  mt-8 h-screen">
+        <div class="flex flex-row justify-center align-middle items-center">
+            <img src="{% static 'images/logo.webp' %}" class="h-[100px]">
+            <span class="text-[40px] ArimoBold text-white title ml-2">MAPUAMATES</span>
+        </div>
+        <div class="bg-white  border-2 border-transparent rounded-[40px] py-[40px] mt-8">
+            <p class="text-black text-[30px] ArimoBold text-center">SIGN UP</p>
+            <form class="text-center" method="POST" onsubmit="return validateData()" action="{% url 'confirm-account' %}">{% csrf_token %} 
+                <div class="py-10 LibreFranklinRegular">
+                    <p> <input class="login" name="username" type="text" id="username" placeholder="Username"  required></p>
+                    <p class="mt-2 text-red-500" id="username-error"></p>
+                    <p> <input  class="login mt-4" name="email" type="email" id="email" placeholder="Email"  required></p>
+                    <p class="mt-2 text-red-500" id="email-error"></p>
+                    <p> <input  class="login mt-4" name="pass" type="password" id="pass1" placeholder="Password"  required></p>
+                    <p class="mt-2 text-red-500" id="pass1-error"></p>
+                    <p> <input  class="login mt-4" name="pass2" type="password" id="pass2" placeholder="Confirm Password"  required></p>
+                    <p class="mt-2 text-red-500" id="pass2-error"></p>
+                </div>
+                <button type="submit" class="mt-6 w-[280px] h-[60px] border-2 border-transparent rounded-[25px] bg-[#8ee6fc] text-[18px]  ArimoBold text-center">SIGN UP</button>
+                <p class="LibreFranklinRegular text-[15px] mt-4"><i>Already have an account? <a href="{% url 'login' %}"><u>Log In</u></a></i></p>
+            </form>
+        </div>
+    </div>
+</body>
+<div class="hidden">
+{% for user in accounts %} 
+<p class="user_username" >{{user.username}}</p>
+<p class="user_email" >{{user.email}}</p>
+{% endfor %}
+</div>
+<script>
+    function validateData(){
+        pass = validatePass()
+        user = validateUsername()
+        email = validateEmail()
+        if (!pass || !user || !email){
+            return false
+        }
+        return true
+        
+    }
+    function validatePass(){
+        let pass1 = document.getElementById('pass1').value
+        let pass2 = document.getElementById('pass2').value
+        if (pass1 === pass2){
+            
+            return true
+            
+        }
+        document.getElementById('pass1-error').innerHTML = "Password does not match"
+        document.getElementById('pass2-error').innerHTML = "Password does not match"
+
+        document.getElementById('pass1').classList.add("login-error")
+        document.getElementById('pass1').classList.remove("login")
+        
+        document.getElementById('pass2').classList.add("login-error")
+        document.getElementById('pass2').classList.remove("login")
+        
+        return false
+    }
+    function validateUsername(){
+        let users = document.getElementsByClassName('user_username')
+        let username = document.getElementById('username').value
+        for (user of users) {
+            if (user.innerHTML === username){
+                document.getElementById('username-error').innerHTML = "Username already exists"
+                document.getElementById('username').classList.add("login-error")
+                document.getElementById('username').classList.remove("login")
+                return false
+            }
+        }
+        return true
+
+    }
+    function validateEmail(){
+        let emails = document.getElementsByClassName('user_email')
+        let user_email = document.getElementById('email').value
+        for (email of emails) {
+            if (email.innerHTML === user_email){
+                document.getElementById('email-error').innerHTML = "Email already in use"
+                document.getElementById('email').classList.add("login-error")
+                document.getElementById('email').classList.remove("login")
+                return false
+            }
+        }
+        return true
+
+    }
+</script>
+
+{% endblock %}

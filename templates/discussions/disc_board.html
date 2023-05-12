@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% block content %}
+{% load static %}
+
+{% include 'partials/message_modal.html' %}
+{% include "partials/navbar.html" %}
+
+<div class="mt-10 flex flex-row">
+    <form method="POST" class="ml-auto mr-12" action=""> {% csrf_token %}
+        <button type="submit" class="ml-[19.3rem] mt-[.15rem] absolute"><i class="fa-solid fa-magnifying-glass text-[#000] fa-lg mt-[17px]"></i></button>
+        <input placeholder="search discussion title" type='text' name="search_value" class="pr-[40px] w-[350px] border-[1px] border-[#111937] rounded-[20px] focus:ring-[1px] focus:ring-[#6e87da] focus:border-[1px] focus:border-[#6e87da]">
+    </form>
+</div>
+<p class="ArimoBold text-[30px] text-center mt-5">DISCUSSION BOARDS</p>
+<div class="flex flex-row w-[85%] m-auto ">
+    <a href="{% url 'home' %}" class="ml-2"><p class="ArimoBold text-[18px] text-center mt-5 text-[#2563EB]"><i class="fa-solid fa-arrow-left mr-2"></i></i>BACK TO HOME</p></a>
+    <a href="{% url 'create-board' %}" class="ml-auto mr-2 "><p class="ArimoBold text-[18px] text-center mt-5 text-[#2563EB]"><i class="fa-solid fa-plus mr-2"></i>CREATE NEW</p></a>
+</div>
+<div class="mt-8 pb-10">
+    {% for disc in page_obj %}
+    <div class="border-[2px] border-black rounded-[15px] h-[210px] w-[85%] m-auto mt-4">
+        <div class="w-[95%] m-auto ">
+            <p class="ArimoBold text-[25px] mt-5">{{disc.disc_title}}</p>
+            <div class="overflow-hidden text-ellipsis h-[80px] mt-3">
+                <p class="LibreFranklinRegular text-[18px]  ">{{disc.disc_description}}</p>
+            </div>
+        </div>
+        <div class="flex flex-row ml-auto">
+            <span class="ml-8 mt-[15px] ArimoBold text-[14px]">{{disc.date_added|date:"M d, Y"}} | {{disc.date_added|time:"h:i a"}}</span>
+            <a href="{% url 'discussion-details' disc.id %}" class="ml-auto mr-5 mt-[15px] "><span class="ArimoBold text-[18px] text-[#2563EB]"><i><b>Join Discussion</b></i><i class="ml-2 fa-solid fa-arrow-right fa-lg"></i></span></a>
+        </div>
+    </div>
+    {% endfor %}
+
+    <div class="m-auto  w-[70%] mt-8"><!-- PAGINATION -->
+        <div class="flex flex-row justify-center text-primary">
+            {% if page_obj.has_previous %}
+                <a href="?page={{ page_obj.previous_page_number }}" class="mr-3 mt-[5px]"><i class="fa-solid fa-angle-left"></i></a>
+            {% else %}
+                <span class="mr-3 mt-[5px] pointer-events-none"><i class="fa-solid fa-angle-left text-active" ></i></span>
+            {% endif %}
+            {% for pages in page_obj.paginator.page_range %}
+                {% if page_obj.number == pages %}
+                    <a href="?page={{pages}}" class="mx-2 w-[40px] h-[40px] text-center border-[1px] text-[white]  border-black bg-black rounded   font-bold">
+                        <div class="mt-[5px]">
+                            <span>{{ pages }}</span>
+                        </div>
+                    </a>
+                {% else %}
+                    <a href="?page={{pages}}" class="mx-2  w-[40px] h-[40px] text-center border-[1px] border-black rounded hover:bg-black hover:text-[white] font-bold">
+                        <div class="mt-[5px]">
+                            <span>{{ pages }}</span>
+                        </div>
+                    </a>
+                {% endif %}
+            {% endfor %}
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}" class="ml-3 mt-[5px]"><i class="fa-solid fa-angle-right"></i></a>
+            {% else %}
+                <a href="" class="ml-3 mt-[5px] pointer-events-none"><i class="fa-solid fa-angle-right text-active"></i></a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+
+
+{% endblock  %}

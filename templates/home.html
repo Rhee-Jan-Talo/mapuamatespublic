@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block content %}
+{% load static %}
+{% include "partials/navbar.html" %}
+<div class="w-[90%] m-auto  h-screen">
+    <div class="mt-4">
+        <p class="ArimoBold text-[40px]">WELCOME! {{user.fname|default_if_none:""|title}} {{user.mname|default_if_none:""|slice:":1"|upper}}. {{user.lname|default_if_none:""|title}}</p>
+        <p class="LibreFranklinRegular text-[25px]"><i>What would you like to do?</i></p>
+    </div>
+    <div class="flex flex-row mt-10">
+        <div class="w-[50%] text-center">
+            <p class="ArimoBold text-[25px]">DISCUSSION BOARDS</p>
+            <img src="{% static 'images/discussion.png' %}" class="h-[200px] m-auto mt-4" >
+            <p class="LibreFranklinRegular text-[18px] w-[80%] m-auto mt-4">
+                Get the chance to engage in discussions related
+                to academic interests, hobbies, and other
+                relevant topics with all fellow MMCM students
+                in a supportive and engaging community. This
+                discussion board allows collaborative learning
+                and knowledge-sharing among all MMCM
+                students.</p>
+            <a href="{% url 'discussion-board' %}"><button type="button" class="mt-8 bg-gray-500 h-[50px] w-[150px] border-2 border-transparent rounded-[25px] text-white ArimoReg">SELECT</button></a>
+        </div>
+        <div class="w-[50%] text-center">
+            <p class="ArimoBold text-[25px]">PRIVATE MESSAGING</p>
+            <img src="{% static 'images/private_messaging.png' %}" class="h-[200px] m-auto mt-4" >
+            <p class="LibreFranklinRegular text-[18px] w-[80%] m-auto mt-4">
+                Get the chance to connect and communicate
+                exclusively with fellow students who share similar interests and
+                career goals. Engage in discussions on specific
+                academic topics, exchange ideas, and
+                collaborate on projects in a supportive and
+                engaging community.</p>
+            <a href="{% url 'messages-inbox' %}">
+                <button type="button" class="mt-8 bg-gray-500 h-[50px] w-[150px] border-2 border-transparent rounded-[25px] text-white ArimoReg">SELECT</button>
+            </a>
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

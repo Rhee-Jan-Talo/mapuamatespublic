@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block content %}
+{% load static %}
+<body class="from-blue-600 to-blue-300 bg-gradient-to-b ">
+
+    <div class="w-[90%] m-auto  mt-8 h-screen">
+        <div class="flex flex-row justify-center align-middle items-center">
+            <img src="{% static 'images/logo.webp' %}" class="h-[100px]">
+            <span class="text-[40px] ArimoBold text-white title ml-2">MAPUAMATES</span>
+        </div>
+        <div class="bg-white  border-2 border-transparent rounded-[40px] py-[50px] mt-8">
+            <p class="text-black text-[30px] ArimoBold text-center">SIGN IN</p>
+            <form method="POST" class="text-center">{% csrf_token %} 
+                <div class="py-10 LibreFranklinRegular">
+                    <p> <input class="{% if messages %} login-error {% else %} login {% endif %}" name="username" type="text" placeholder="Username" required></p>
+                    <p> <input class="{% if messages %} login-error {% else %} login {% endif %} mt-4" name="pass" type="password" placeholder="Password" required></p>
+                    
+                    {% if messages %}
+                    {% for message in messages %}
+                    <p class="mt-2 text-red-500">{{message}}</p>
+                    {% endfor %}
+                    {% endif %}
+                </div>
+                <button type="submit" class="mt-10 w-[280px] h-[60px] border-2 border-transparent rounded-[25px] bg-[#8ee6fc] text-[18px]  ArimoBold text-center">LOG IN</button>
+                <p class="LibreFranklinRegular text-[15px] mt-4"><i>Don't have an account? <a href="{% url 'register-account' %}"><u>Sign up</u></a></i></p>
+            </form>
+            
+        </div>
+        
+    </div>
+</body>
+{% endblock %}

@@ -1,0 +1,98 @@
+{% block content %}
+{% load static %}
+<div class="w-[90%] m-auto ">
+    <div class="h-[120px] flex flex-row items-center">
+        <a href="{% url 'discussion-board' %}" class="ml-2 mt-[5px]"><p class="ArimoBold text-[20px] text-left text-black"><i class="fa-solid fa-circle-arrow-left fa-xl"></i></i></p></a>
+        <a href="{% url 'home' %}" class="ml-3"><i class="fa-solid fa-house text-black fa-xl" ></i></a>
+        <a href="{% url 'edit-profile' %}" class="ml-3">
+            {% if user.pfp %}
+            <img src="{% static user.pfp.url %}" class="profile-picture">
+            {% else %}
+            <img src="{% static 'images/default.png' %}" class="profile-picture">
+            {% endif %}
+        </a>
+        <button class="ml-3"><i class="fa-solid fa-right-from-bracket text-black fa-2xl" onclick="OpenModal()"></i></button>
+    </div>
+    <hr class="border-[1.5px] border-white">
+    <div>
+        <p class="ArimoBold text-[20px] text-left mt-5">MY BOARDS</p>
+        <div class="text-left">
+            <div class="h-[50px] w-[85%]  mt-6">
+                {% if page_obj_boards %}
+                {% for disc in page_obj_boards %}
+                <div class="mt-4">
+                    <a href="{% url 'discussion-details' disc.id %}"><p class="ArimoBold text-[15px] mt-2 text-ellipsis"><u><i>{{ disc.disc_title|slice:100|title }} ...</i></u></p></a>
+                    <span class="mt-[2px] ArimoReg text-[10px]">{{disc.date_added|date:"M d, Y"}} </span>
+                    <hr class="mt-2 border-[1px] border-black">
+                </div>
+                {% endfor %}
+                {% else %}
+                <p class="ArimoReg text-[15px]"><i>No boards available click <a href="{% url 'create-board' %}"><u>here</u></a> to add</i></p>
+                {% endif %}
+
+                <div class="m-auto  w-[70%] mt-8"><!-- PAGINATION -->
+                    <div class="flex flex-row justify-center text-primary">
+                        {% if page_obj_boards.has_previous %}
+                            <a href="?page={{ page_obj.previous_page_number }}" class="mr-3 mt-[3.5px]"><i class="fa-solid fa-angle-left"></i></a>
+                        {% else %}
+                            <span class="mr-3 mt-[3.5px] pointer-events-none"><i class="fa-solid fa-angle-left text-active" ></i></span>
+                        {% endif %}
+                        {% for pages in page_obj_boards.paginator.page_range %}
+                            {% if page_obj_boards.number == pages %}
+                                <a href="?page={{pages}}" class="mx-2 w-[30px] h-[30px] text-center border-[1px] text-[white]  border-black bg-black rounded   font-bold">
+                                    <div class="mt-[2px]">
+                                        <span>{{ pages }}</span>
+                                    </div>
+                                </a>
+                            {% else %}
+                                <a href="?page={{pages}}" class="mx-2  w-[30px] h-[30px] text-center border-[1px] border-black rounded hover:bg-black hover:text-[white] font-bold">
+                                    <div class="mt-[2px]">
+                                        <span>{{ pages }}</span>
+                                    </div>
+                                </a>
+                            {% endif %}
+                        {% endfor %}
+                        {% if page_obj_boards.has_next %}
+                            <a href="?page={{ page_obj_boards.next_page_number }}" class="ml-3 mt-[3.5px]"><i class="fa-solid fa-angle-right"></i></a>
+                        {% else %}
+                            <a href="" class="ml-3 mt-[3.5px] pointer-events-none"><i class="fa-solid fa-angle-right text-active"></i></a>
+                        {% endif %}
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    
+
+</div>
+
+
+<div id="logout-modal" class="hidden h-full pt-[18%] xl:pt-[10%] w-full fixed z-[1] overflow-auto left-[0] top-[0] bg-[rgb(0,0,0)] bg-[rgba(0,0,0,0.4)]">
+    <div class="w-[280px] xl:w-[400px] p-5 m-auto bg-white">
+        <div id="withdraw-confirmation" class=""> <!--MODAL FOR WITHDRAWAL CONFIRMATION -->
+            <div class="flex flex-row">
+                <button onclick="RemoveModal()" class="count-2 ml-auto mt-2 mr-2"><b>&#10005;</b></button>
+            </div>
+            <div class="w-[100%] m-auto text-center p-5 xl:p-10">
+                <p class="font-[500] text-[18px] xl:text-[20px] 2xl:text-[24px]">Are you sure you want to Logout?</p>
+            </div>
+            <div class="flex flex-row text-[16px] justify-center">
+                <button onclick="RemoveModal()" class="border-0  px-[3rem] py-[.40rem] font-[500] text-primary">No</button>
+                <a href="{% url 'log-out' %}"><button onclick="" class="ml-2 border-0 bg-black px-[3rem] py-[.40rem] font-[500] text-white"><b>Yes</b></button></a>
+            </div><br>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    function OpenModal(){
+        document.getElementById('logout-modal').classList.remove('hidden')
+    }
+    function RemoveModal(){
+        document.getElementById('logout-modal').classList.add('hidden')
+    }
+    
+</script>
+{% endblock %}

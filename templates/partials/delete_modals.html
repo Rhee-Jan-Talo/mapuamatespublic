@@ -1,0 +1,32 @@
+
+<div id="delete-post-modal" class="hidden h-full pt-[18%] xl:pt-[10%] w-full fixed z-[1] overflow-auto left-[0] top-[0] bg-[rgb(0,0,0)] bg-[rgba(0,0,0,0.4)]">
+    <div class="w-[280px] xl:w-[400px] p-5 m-auto bg-white">
+        <div id="withdraw-confirmation" class=""> <!--MODAL FOR WITHDRAWAL CONFIRMATION -->
+            <div class="flex flex-row">
+                <button onclick="RemoveDeletePostModal()" class="count-2 ml-auto mt-2 mr-2"><b>&#10005;</b></button>
+            </div>
+            <div class="w-[100%] m-auto text-center p-5 xl:p-10">
+                <p class="font-[500] text-[18px] xl:text-[20px] 2xl:text-[24px]">Are you sure you want to Delete this Board?</p>
+            </div>
+            <div class="flex flex-row text-[16px] justify-center">
+                <button onclick="RemoveDeletePostModal()" class="border-0  px-[3rem] py-[.40rem] font-[500] text-primary">No</button>
+                <a href="{% url 'delete-post' board_data.id %}"><button onclick="" class="ml-2 border-0 bg-[#111937] px-[3rem] py-[.40rem] font-[500] text-white">Yes</button></a>
+            </div><br>
+        </div>
+    </div>
+</div>
+
+
+
+<script>
+    
+    function RemoveDeletePostModal(){
+        document.getElementById('delete-post-modal').classList.add('hidden')
+    }
+</script>
+<script>
+    
+    function OpenDeletePostModal(){
+        document.getElementById('delete-post-modal').classList.remove('hidden')
+    }
+</script>

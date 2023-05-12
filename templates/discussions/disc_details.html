@@ -1,0 +1,143 @@
+{% extends "base.html" %}
+{% block content %}
+{% load static %}
+<body class="">
+<div class="flex flex-row h-full">
+    <div class="w-[20%] from-blue-500 to-blue-200 bg-gradient-to-r h-auto">
+        {% include 'partials/left_navbar_board.html' %}
+        {% include 'partials/message_modal.html' %}
+        {% include 'partials/delete_modals.html' %}
+    </div>
+    <div class=" w-[80%] min-h-screen">
+        <div class="w-[95%]  m-auto">
+            <div class="h-[60px] mt-10 flex flex-row">
+
+                {% if board_data.user_id.pfp %}
+                <img src="{% static board_data.user_id.pfp.url %}" class="profile-picture">
+                {% else %}
+                <img src="{% static 'images/default.png' %}" class="profile-picture">
+                {% endif %}
+
+
+                <span class="ArimoBold mt-[9px] ml-2 text-[14px]"> 
+                    Posted by {{board_data.user_id.fname|default_if_none:""|title}} {{board_data.user_id.mname|default_if_none:""|slice:":1"|upper}}. {{board_data.user_id.lname|default_if_none:""|title}}
+                    {{board_data.date_added|date:"M d, Y"}} | {{board_data.date_added|time:"h:i a"}} 
+                    {% if board_data.user_id.id == request.user.id %}
+                    <a href="{% url 'edit-post' board_data.id %}" class="ml-4 text-green-500"><u>Edit Post</u></a> 
+                    <button onclick="OpenDeletePostModal()" class="ml-2 text-red-500"><u>Delete Post</u></a></button>
+                    {% endif %}
+            </div>
+            <hr class="border-[1px] border-black">
+            <div>
+                <p class="ArimoBold text-[25px] mt-5">{{board_data.disc_title|title}}</p>
+                <p class="LibreFranklinRegular text-[18px] mt-3">{{board_data.disc_description}}</p>
+            </div>
+            <hr class="border-[1px] border-gray-400 mt-4">
+            <p class="ArimoBold text-[15px] mt-5">Comments</p>
+            <form class="flex flex-col" method="POST" action="{% url 'send-comment' board_data.id %}"> {% csrf_token %}
+                <div class="flex">
+                    {% if user.pfp %} 
+                    <img src="{% static user.pfp.url %}" class="profile-picture-comments mt-2">
+                    {% else %}
+                    <img src="{% static 'images/default.png' %}" class="profile-picture-comments">
+                    {% endif %}
+                    <textarea id="input-message" class="textarea-style ml-3 mt-3 border-2 border-black w-full h-[100px]" name="comment" placeholder="Type your comment here" required></textarea>
+
+                </div>
+                <button type="submit" class="ml-auto mt-2"><p class="ArimoBold">Post comment</p></button>
+            </form>
+            <div class="pb-10">
+                {% for comment in page_obj_comments %}
+                <div class="mt-4 ">
+                    <div class="flex flex-row">
+                        {% if comment.user_id.pfp %} 
+                        <img src="{% static comment.user_id.pfp.url %}" class="profile-picture-comments">
+                        {% else %}
+                        <img src="{% static 'images/default.png' %}" class="profile-picture-comments">
+                        {% endif %}
+                        <span class="ArimoBold mt-[5px] ml-2 text-[14px]">
+                            <u>{{comment.user_id.fname|default_if_none:""|title}} {{comment.user_id.mname|default_if_none:""|slice:":1"|upper}}. {{comment.user_id.lname|default_if_none:""|title}}</u>
+                            commented on 
+                            {{comment.date_added|date:"M d, Y"}} | {{comment.date_added|time:"h:i a"}}
+                            {% if comment.user_id.id == request.user.id %}
+                            <button onclick="OpenDeleteCommentModal('{{comment.id}}')" class="ml-4 text-red-500"><u>Delete Comment</u></button>
+                            {% endif %}
+                    </div>
+                    <p class="LibreFranklinRegular text-[14px] mt-2 ml-10">{{ comment.comment }}</p>
+                    <hr class="mt-[10px]">
+                </div>
+                <!--DELETE COMMENT MODAL-->
+                <div id="delete-comment-modal-{{comment.id}}" class="hidden h-full pt-[18%] xl:pt-[10%] w-full fixed z-[1] overflow-auto left-[0] top-[0] bg-[rgb(0,0,0)] bg-[rgba(0,0,0,0.4)]">
+                    <div class="w-[280px] xl:w-[400px] p-5 m-auto bg-white">
+                        <div id="withdraw-confirmation" class=""> <!--MODAL FOR WITHDRAWAL CONFIRMATION -->
+                            <div class="flex flex-row">
+                                <button onclick="RemoveDeleteCommentModal('{{comment.id}}')" class="count-2 ml-auto mt-2 mr-2"><b>&#10005;</b></button>
+                            </div>
+                            <div class="w-[100%] m-auto text-center p-5 xl:p-10">
+                                <p class="font-[500] text-[18px] xl:text-[20px] 2xl:text-[24px]">Are you sure you want to delete this comment?</p>
+                            </div>
+                            <div class="flex flex-row text-[16px] justify-center">
+                                <button onclick="RemoveDeleteCommentModal('{{comment.id}}')" class="border-0  px-[3rem] py-[.40rem] font-[500] text-primary">No</button>
+                                <a href="{% url 'delete-comment' board_data.id comment.id %}"><button onclick="" class="ml-2 border-0 bg-[#111937] px-[3rem] py-[.40rem] font-[500] text-white">Yes</button></a>
+                            </div><br>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+                <div class="m-auto  w-[70%] mt-8"><!-- PAGINATION -->
+                    <div class="flex flex-row justify-center text-primary">
+                        {% if page_obj_comments.has_previous %}
+                            <a href="?page={{ page_obj.previous_page_number }}" class="mr-3 mt-[5px]"><i class="fa-solid fa-angle-left"></i></a>
+                        {% else %}
+                            <span class="mr-3 mt-[5px] pointer-events-none"><i class="fa-solid fa-angle-left text-active" ></i></span>
+                        {% endif %}
+                        {% for pages in page_obj_comments.paginator.page_range %}
+                            {% if page_obj_comments.number == pages %}
+                                <a href="?page={{pages}}" class="mx-2 w-[40px] h-[40px] text-center border-[1px] text-[white]  border-black bg-black rounded   font-bold">
+                                    <div class="mt-[5px]">
+                                        <span>{{ pages }}</span>
+                                    </div>
+                                </a>
+                            {% else %}
+                                <a href="?page={{pages}}" class="mx-2  w-[40px] h-[40px] text-center border-[1px] border-black rounded hover:bg-black hover:text-[white] font-bold">
+                                    <div class="mt-[5px]">
+                                        <span>{{ pages }}</span>
+                                    </div>
+                                </a>
+                            {% endif %}
+                        {% endfor %}
+                        {% if page_obj_comments.has_next %}
+                            <a href="?page={{ page_obj_comments.next_page_number }}" class="ml-3 mt-[5px]"><i class="fa-solid fa-angle-right"></i></a>
+                        {% else %}
+                            <a href="" class="ml-3 mt-[5px] pointer-events-none"><i class="fa-solid fa-angle-right text-active"></i></a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+
+<script>
+    function OpenDeleteCommentModal(comment_id){
+        document.getElementById(`delete-comment-modal-${comment_id}`).classList.remove('hidden')
+    }
+    function RemoveDeleteCommentModal(comment_id){
+        document.getElementById(`delete-comment-modal-${comment_id}`).classList.add('hidden')
+    }
+</script>
+<script>
+    $("#input-message").keypress(function (e) {
+    if(e.which === 13 && !e.shiftKey) {
+        if (document.getElementById('input-message').value === "") {
+            e.preventDefault();
+        }
+        else {
+            $(this).closest("form").submit();
+        }
+    }
+});
+</script>
+{% endblock  %}

@@ -1,0 +1,13 @@
+Django==4.0.0
+django-browser-reload==1.6.0
+django-environ==0.10.0
+django-tailwind @ git+https://github.com/timonweb/django-tailwind.git@85d837440b74a8194968b73828f125cdd69a9083
+Pillow==9.5.0
+tzdata==2023.3
+channels==3.0.4
+gunicorn
+django_heroku
+whitenoise
+uvicorn
+websockets
+

@@ -1,0 +1,122 @@
+{% block content %}
+{% load static %}
+<div class="w-[90%] m-auto">
+    <div class="h-[88px] flex flex-row items-center">
+        <a href="{% url 'home' %}" class="ml-2 mt-[5px]"><p class="ArimoBold text-[20px] text-left text-black"><i class="fa-solid fa-circle-arrow-left fa-xl"></i></i></p></a>
+        <a href="{% url 'edit-profile' %}" class="ml-3">
+            {% if user.pfp %}
+            <img src="{% static user.pfp.url %}" class="profile-picture">
+            {% else %}
+            <img src="{% static 'images/default.png' %}" class="profile-picture">
+            {% endif %}
+        </a>
+        <button class="ml-3"><i class="fa-solid fa-right-from-bracket text-black fa-2xl" onclick="OpenLogoutModal()"></i></button>
+    </div>
+</div>
+<hr class="border-[1.5px] border-white">
+<div class="flex flex-col h-[80vh] overflow-hidden overflow-y-auto">
+    <div class="mt-5 ">
+        <div class="w-[100%] m-auto ">
+            {% if threads %}
+            {% for thread in threads %}
+            <a href="{% url 'messages-inbox-single' thread.id %}">
+                <div chat-id="chat_{{thread.id}}" id="chat-{{thread.id}}-left" class="chats {% if thread_id == thread.id %} active {%endif%} mt-2   py-4 w-[90%] m-auto border-[1px] border-transparent hover:bg-blue-300 rounded-[10px] cursor-pointer ">
+                    <div class="h-[60px] flex flex-row ">
+                        {% if thread.first_person.id == request.user.id %}
+                            {% if thread.second_person.pfp %}
+                            <img src="{% static thread.second_person.pfp.url %}" class="profile-picture-inbox ml-1">
+                            {% else %}
+                            <img src="{% static 'images/default.png' %}" class="profile-picture-inbox ml-1">
+                            {% endif %}
+                        {% else %} 
+                            {% if thread.first_person.pfp %}
+    
+                            <img src="{% static thread.first_person.pfp.url %}" class="profile-picture-inbox ml-1">
+                            {% else %}
+                            <img src="{% static 'images/default.png' %}" class="profile-picture-inbox ml-1">
+                            {% endif %}
+                        {% endif %}
+                        <div class="overflow-hidden h-[110%] ">
+                            <p class="ArimoBold  ml-2 text-[16px] elipsis w-[80%]"> 
+                                {% if thread.first_person.id == request.user.id %}
+                                {{ thread.second_person.fname }} {{ thread.second_person.lname }}
+                                {% else %} 
+                                {{ thread.first_person.fname }} {{ thread.first_person.lname }}
+                                {% endif %}
+                                
+                            </p>
+                            <p class="LibreFranklinRegular  ml-2 text-[14px] elipsis w-[80%] ">
+                            {% if thread.first_person.id == request.user.id %}
+                            {{thread.second_person.get_strand_display|default_if_none:""}}
+                            {% else %} 
+                            {{thread.first_person.get_strand_display|default_if_none:""}}
+                            {% endif %}   
+                            </p>
+                            <p class="LibreFranklinRegular  ml-2 text-[12px] elipsis w-[80%]"> 
+                             {{thread.timestamp|date:"M d, Y"}}
+                            {{thread.timestamp|time:"h:i a"}}</p>
+                        </div>
+                    </div>
+                </div>
+            </a>
+            {% endfor %}
+            {% else %} 
+            <p class="LibreFranklinRegular  text-center text-[16px] elipsis w-[80%]"><i>No chats available</i></p>
+            {% endif %}
+            
+            
+            
+        </div>
+        
+        
+    </div>
+    
+</div>
+<div id="logout-modal" class="hidden h-full pt-[18%] xl:pt-[10%] w-full fixed z-[1] overflow-auto left-[0] top-[0] bg-[rgb(0,0,0)] bg-[rgba(0,0,0,0.4)]">
+    <div class="w-[280px] xl:w-[400px] p-5 m-auto bg-white">
+        <div id="withdraw-confirmation" class=""> <!--MODAL FOR WITHDRAWAL CONFIRMATION -->
+            <div class="flex flex-row">
+                <button onclick="RemoveLogoutModal()" class="count-2 ml-auto mt-2 mr-2"><b>&#10005;</b></button>
+            </div>
+            <div class="w-[100%] m-auto text-center p-5 xl:p-10">
+                <p class="font-[500] text-[18px] xl:text-[20px] 2xl:text-[24px]">Are you sure you want to Logout?</p>
+            </div>
+            <div class="flex flex-row text-[16px] justify-center">
+                <button onclick="RemoveLogoutModal()" class="border-0  px-[3rem] py-[.40rem] font-[500] text-primary">No</button>
+                <a href="{% url 'log-out' %}"><button onclick="" class="ml-2 border-0 bg-black px-[3rem] py-[.40rem] font-[500] text-white"><b>Yes</b></button></a>
+            </div><br>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    function OpenLogoutModal(){
+        document.getElementById('logout-modal').classList.remove('hidden')
+    }
+    function RemoveLogoutModal(){
+        document.getElementById('logout-modal').classList.add('hidden')
+    }
+    
+</script>
+<style>
+    .active{
+    --tw-bg-opacity: 1;
+    background-color: rgb(147 197 253 / var(--tw-bg-opacity));
+    }
+</style>
+<script>
+    
+    function openChat(thread_id) {
+        
+
+        let chatboxleft = document.getElementById(`chat-${thread_id}-left`)
+        let chatboxesleft = document.getElementsByClassName('chats')
+        for (chat of chatboxesleft){
+            chat.classList.remove('active')
+        }
+        chatboxleft.classList.add('active')
+
+    }
+</script>
+{% endblock %}

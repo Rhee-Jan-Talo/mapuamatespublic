@@ -1,0 +1,220 @@
+{% extends "base.html" %}
+{% block content %}
+{% load static %}
+
+
+
+
+<body class="bg-blue-200 ">
+    <div class="flex flex-row min-h-screen">
+        <div class="w-[20%] from-blue-500 to-blue-200 bg-gradient-to-r  ">
+            {% include 'partials/left_navbar_messages.html' %}
+        </div>
+        <input value="{{thread.id}}" id="thread_id" hidden>
+        {% if request.user.pfp %}
+        <input value="{% static request.user.pfp.url %}" id="sender_img" hidden>
+        
+        {% else %}
+        <input value="{% static 'images/default.png' %}" id="sender_img" hidden>
+        
+        {% endif %}
+            {% if thread.first_person.id == request.user.id %}
+            <input value="{{thread.first_person.id}}" id="logged-in-user" hidden>
+            <input value="{{thread.second_person.id}}" id="send-to-user" hidden>
+            {% if thread.first_person.pfp.url %}
+            <input value="{% static thread.second_person.pfp.url %}" id="sendedto_img" hidden>
+            {% else %} 
+            <input value="{% static 'images/default.png' %}" id="sendedto_img" hidden>
+            {% endif %}
+            
+            {% else %} 
+            <input value="{{thread.second_person.id}}" id="logged-in-user" hidden>
+            <input value="{{thread.first_person.id}}" id="send-to-user" hidden>
+            {% if thread.first_person.pfp.url %}
+            <input value="{% static thread.first_person.pfp.url %}" id="sendedto_img" hidden>
+            {% else %} 
+            <input value="{% static 'images/default.png' %}" id="sendedto_img" hidden>
+            {% endif %}
+            {% endif %}
+        
+        <div chat-id="chat_{{thread.id}}" class="chats_chatboxes bg-white w-[80%] flex flex-col  " id="chat_{{thread.id}}">
+            {% if thread %}
+            <div class="bg-white border-l-[1px] border-white">
+                
+                <div class="h-[80px] flex flex-row  items-center ml-5">
+                    {% if thread.first_person.id == request.user.id or thread.second_person.id == request.user.id %} 
+                    {% if thread.first_person.id == request.user.id %}
+                        {% if thread.second_person.pfp %}
+                        <img src="{% static thread.second_person.pfp.url %}" class="profile-picture-big">
+                        {% else %}
+                        <img src="{% static 'images/default.png' %}" class="profile-picture-big">
+                        {% endif %}
+                    {% else %} 
+                        {% if thread.first_person.pfp %}
+                        <img src="{% static thread.first_person.pfp.url %}" class="profile-picture-big">
+                        {% else %}
+                        <img src="{% static 'images/default.png' %}" class="profile-picture-big">
+                        {% endif %}
+                    {% endif %}
+
+                    <div class="flex flex-row w-[92%]">
+                        <div class="flex flex-col ">
+                            <span class="ArimoBold ml-3 text-[18px]">
+                                {% if thread.first_person.id == request.user.id %}
+                                {{ thread.second_person.fname|default_if_none:""|title }} {{thread.second_person.mname|default_if_none:""|slice:":1"|upper}}. {{ thread.second_person.lname|default_if_none:""|title }}
+                                {% else %} 
+                                {{ thread.first_person.fname|default_if_none:""|title }} {{thread.first_person.mname|default_if_none:""|slice:":1"|upper}}. {{ thread.first_person.lname|default_if_none:""|title }}
+                                {% endif %}
+                            </span>
+                            <span class="LibreFranklinRegular ml-3 text-[14px]">
+                                {% if thread.first_person.id == request.user.id %}
+                                {{thread.second_person.get_strand_display|default_if_none:""}}
+                                {% else %} 
+                                {{thread.first_person.get_strand_display|default_if_none:""}}
+                                {% endif %}
+                            </span>
+                        </div>
+                        <div class="ml-auto mt-3">
+                            <i class="fa fa-bars fa-lg cursor-pointer" aria-hidden="true" onclick="openSidebar()"></i>
+                        </div>
+                    </div>
+                    {% else %}
+                    
+                    {% endif %}
+                </div>
+                <hr class="border-[1px] border-gray-400 mt-2">
+            </div>
+            {% else %} 
+            <div class="h-full flex flex-row w-[95%] m-auto">
+                <div class="w-[50%] flex flex-row">
+                    <div class="mr-auto mt-[140px]">
+                        <span class="LibreFranklinRegular text-[25px]"><i class="fa-solid fa-arrow-left text-black fa-lg mr-2"></i>Open chats here</span>
+                    </div>
+                </div>
+                <div class="w-[50%] flex flex-row">
+                   <div class="ml-auto mt-8">
+                    <span class="LibreFranklinRegular text-[25px]">Start chats here <i class="fa-solid fa-arrow-right text-black fa-lg ml-2" ></i></span>
+                   </div>
+                </div>
+            </div>
+            {% endif %}
+            <div class="m-auto w-[100%] pb-3 h-[70vh] overflow-hidden overflow-y-auto" id="msg-card-body">
+                {% if thread.first_person.id == request.user.id or thread.second_person.id == request.user.id %} 
+                <div class="mt-5 text-center pb-10">
+                    <p class="LibreFranklinRegular ml-3 text-[16px]">You are chatting with </p>
+                    <div class="flex flex-row justify-center py-2">
+                        {% if thread.first_person.id == request.user.id %}
+                        {% if thread.second_person.pfp %}
+                        <img src="{% static thread.second_person.pfp.url %}" class="profile-picture-big">
+                        {% else %}
+                        <img src="{% static 'images/default.png' %}" class="profile-picture-big">
+                        {% endif %}
+                    {% else %} 
+                        {% if thread.first_person.pfp %}
+                        <img src="{% static thread.first_person.pfp.url %}" class="profile-picture-big">
+                        {% else %}
+                        <img src="{% static 'images/default.png' %}" class="profile-picture-big">
+                        {% endif %}
+                    {% endif %}
+                    </div>
+                    <p class="LibreFranklinRegular ml-3 text-[14px]">
+                        {% if thread.first_person.id == request.user.id %}
+                        {{ thread.second_person.fname|default_if_none:""|title }} {{thread.second_person.mname|default_if_none:""|slice:":1"|upper}}. {{ thread.second_person.lname|default_if_none:""|title }}
+                        {% else %} 
+                        {{ thread.first_person.fname|default_if_none:""|title }} {{thread.first_person.mname|default_if_none:""|slice:":1"|upper}}. {{ thread.first_person.lname|default_if_none:""|title }}
+                        {% endif %}
+                    </p>
+                    <p class="LibreFranklinRegular ml-3 text-[14px]">
+                        {% if thread.first_person.id == request.user.id %}
+                        {{thread.second_person.get_strand_display|default_if_none:""}}
+                        {% else %} 
+                        {{thread.first_person.get_strand_display|default_if_none:""}}
+                        {% endif %}
+                    </p>
+                </div>
+                {% for chat in thread.chatmessage_thread.all %}
+                {% if chat.user.id != request.user.id %}
+                <div class="mr-auto  w-[50%] mt-2"><!--left-->
+                    <div class="w-[95%] m-auto flex flex-row">
+                        <div>
+                            {% if request.user.pfp %}
+                            <img src="{% static chat.user.pfp.url %}" class="profile-picture-comments">
+                            {% else %}
+                            <img src="{% static 'images/default.png' %}" class="profile-picture-comments">
+                            {% endif %}
+                        </div>
+                        <div class="border-[1px] rounded-[5px] border-transparent bg-gray-300 h-auto w-full ml-3">
+                            <div id="message" class="p-2">
+                                {{ chat.message }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% else %}
+                <div class="ml-auto w-[50%] mt-2"><!--right-->
+                    <div class="w-[95%] m-auto flex flex-row">
+                        <div class="border-[1px] rounded-[5px] border-transparent bg-gray-300 h-auto w-full mr-3">
+                            <div id="message" class="p-2">
+                                {{ chat.message }}
+                            </div>
+                        </div>
+                        <div>
+                            {% if request.user.pfp %}
+                            <img src="{% static chat.user.pfp.url %}" class="profile-picture-comments">
+                            {% else %}
+                            <img src="{% static 'images/default.png' %}" class="profile-picture-comments">
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+                {% endfor %}
+                {% else %} 
+                
+                {% endif %}
+                </div>
+                <div class="mt-auto h-[120px]">
+                    <hr class="border-[1px] border-gray-400">
+                    {% if thread.first_person.id == request.user.id or thread.second_person.id == request.user.id %} 
+                    <form id="send-message-form" method="POST" class="flex flex-row w-[95%] m-auto mt-3">{% csrf_token %}
+                        <textarea id="input-message" class="textarea-style border-2 border-black w-full" name="message" placeholder="message" required></textarea></p>
+                        <button type="submit" class="ml-2 border-[1px] border-black rounded-[10px] px-10 hover:bg-gray-300">Send</button>
+                    </form> 
+                    {% else %} 
+                    
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="w-[28%] bg-white border-l-[2px] border-gray-400 {% if thread %} hidden {% endif %}" id="side-bar">
+                {% include 'partials/right_navbar_messages.html' %}
+
+            </div>
+        </div>
+        
+    <script src="{% static 'js/messages.js' %}"></script>
+</body>
+<script>
+    $("#input-message").keypress(function (e) {
+    if(e.which === 13 && !e.shiftKey) {
+        e.preventDefault();
+    
+        $(this).closest("form").submit();
+    }
+});
+</script>
+<script>
+    function openSidebar() {
+        let side_bar = document.getElementById('side-bar')
+        if (side_bar.classList.contains('hidden')) {
+            side_bar.classList.remove('hidden')
+        }
+        else {
+            side_bar.classList.add('hidden')
+        }
+        
+
+        
+    }
+</script>
+{% endblock %}

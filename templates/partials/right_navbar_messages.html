@@ -1,0 +1,87 @@
+{% block content %}
+{% load static %}
+<div class="w-[90%] m-auto">
+    <div class="h-[88px] flex flex-row items-center LibreFranklinRegular text-[16px]">
+        Click the profiles below to start chatting with your colleages
+    </div>
+</div>
+<hr class="border-[1.5px] border-gray-400">
+<div class="flex flex-col h-[80vh] overflow-hidden overflow-y-auto">
+    <div class="mt-5 ">
+        <div class="w-[100%] m-auto">
+            
+            <div method="POST" class=" w-[80%] m-auto py-2 pb-4" action="">
+                <p class="LibreFranklinRegular text-[16px] elipsis w-[80%]"><i>
+                
+                </i></p>
+                <p class="LibreFranklinRegular text-[16px] "><i>
+                    Note: if you cant see any users, you are already chatting with all of them
+                </i></p>
+                <button type="submit" class="ml-[7.3rem] absolute "></button>
+                <input autocomplete="off" id="myInput" onkeyup="myFunction()" placeholder="search profile" type='text' name="search_value" class="pr-[40px] w-[100%] border-[1px] border-[#111937] rounded-[20px] focus:ring-[1px] focus:ring-[#6e87da] focus:border-[1px] focus:border-[#6e87da] mt-3 ">
+            </div>
+            
+            {% for user in users %}
+            {% if user.id != request.user.id %}
+            {% if user.id in chatted_users %}
+            {% else %}
+            <div onclick="OpenModal('{{user.id}}')" class="items mt-1 py-[6px] w-[95%] m-auto border-[1px] border-transparent hover:bg-gray-200 rounded-[10px] cursor-pointer">
+                <div class="h-[60px] flex flex-row ml-2">
+                    {% if user.pfp %}
+                    <img src="{% static user.pfp.url %}" class="profile-picture-inbox">
+                    {% else %}
+                    <img src="{% static 'images/default.png' %}" class="profile-picture-inbox">
+                    {% endif %}
+                    <div class="overflow-hidden h-[110%] mt-2">
+                        <p class="ArimoBold  ml-2 text-[16px] elipsis w-[90%] "> {{ user.fname|default_if_none:""|title }} {{user.mname|default_if_none:""|slice:":1"|upper}}. {{ user.lname|default_if_none:""|title }}</p>
+                        <p class="LibreFranklinRegular  ml-2 text-[14px] elipsis w-[90%]">{{user.strand}}</p>
+                    </div>
+                </div>
+            </div>
+            <div id="startchat-modal-{{user.id}}" class="hidden h-full pt-[18%] xl:pt-[10%] w-full fixed z-[1] overflow-auto left-[0] top-[0] bg-[rgb(0,0,0)] bg-[rgba(0,0,0,0.4)]">
+                <div class="w-[280px] xl:w-[400px] p-5 m-auto bg-white">
+                    <div id="withdraw-confirmation" class=""> <!--MODAL FOR WITHDRAWAL CONFIRMATION -->
+                        <div class="flex flex-row">
+                            <button onclick="RemoveModal('{{user.id}}')" class="count-2 ml-auto mt-2 mr-2"><b>&#10005;</b></button>
+                        </div>
+                        <div class="w-[100%] m-auto text-center p-5 xl:p-10">
+                            <p class="font-[500] text-[18px] xl:text-[20px] 2xl:text-[24px]">Start chat with {{ user.fname|default_if_none:""|title }} {{user.mname|default_if_none:""|slice:":1"|upper}}. {{ user.lname|default_if_none:""|title }}?</p>
+                        </div>
+                        <div class="flex flex-row text-[16px] justify-center">
+                            <button onclick="RemoveModal()" class="border-0  px-[3rem] py-[.40rem] font-[500] text-primary">No</button>
+                            <a href="{% url 'start-chat' user.id %}"><button onclick="" class="ml-2 border-0 bg-black px-[3rem] py-[.40rem] font-[500] text-white"><b>Yes</b></button></a>
+                        </div><br>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+            {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<script>
+    function OpenModal(user_id){
+        document.getElementById(`startchat-modal-${user_id}`).classList.remove('hidden')
+    }
+    function RemoveModal(user_id){
+        document.getElementById(`startchat-modal-${user_id}`).classList.add('hidden')
+    }
+    
+</script>
+<script>
+    function myFunction() {
+      var input = document.getElementById("myInput");
+      var filter = input.value.toLowerCase();
+      var nodes = document.getElementsByClassName('items');
+      for (i = 0; i < nodes.length; i++) {
+        if (nodes[i].innerText.toLowerCase().includes(filter)) {
+          nodes[i].style.display = "block";
+        } else {
+          nodes[i].style.display = "none";
+        }
+      }
+    }
+    </script>
+{% endblock %}
